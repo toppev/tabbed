@@ -207,7 +207,7 @@ public class TableTabList extends SimpleTabList {
         Preconditions.checkNotNull(startCorner, "startCorner can't be null");
         Preconditions.checkNotNull(direction, "direction can't be null");
 
-        Map<Integer,TabItem> map = new HashMap<>();
+        Map<Integer,TabItem> map = new HashMap<>(items.size());
         Iterator<TabItem> iterator = items.iterator();
 
         boolean reverseCol = false;
@@ -247,7 +247,7 @@ public class TableTabList extends SimpleTabList {
     }
 
     private void reset() {
-        Map<Integer,TabItem> newItems = new HashMap<>();
+        Map<Integer,TabItem> newItems = new HashMap<>(this.columns * this.rows);
         for (int row = 0; row < this.columns; row++) {
             for (int column = 0; column < this.rows; column++) {
                 TabItem item = new BlankTabItem();
