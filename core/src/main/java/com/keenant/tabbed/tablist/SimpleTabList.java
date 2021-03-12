@@ -105,8 +105,7 @@ public class SimpleTabList extends TitledTabList implements CustomTabList {
 
     public void add(int index, TabItem item) {
         validateIndex(index);
-        Map<Integer,TabItem> current = new HashMap<>();
-        current.putAll(this.items);
+        Map<Integer, TabItem> current = new HashMap<>(this.items);
 
         Map<Integer,TabItem> map = new HashMap<>();
         for (int i = index; i < getMaxItems(); i++) {
@@ -129,8 +128,7 @@ public class SimpleTabList extends TitledTabList implements CustomTabList {
         for (Entry<Integer,TabItem> entry : items.entrySet())
             validateIndex(entry.getKey());
 
-        Map<Integer,TabItem> oldItems = new HashMap<>();
-        oldItems.putAll(this.items);
+        Map<Integer, TabItem> oldItems = new HashMap<>(this.items);
         update(oldItems, items);
         return oldItems;
     }
@@ -167,8 +165,6 @@ public class SimpleTabList extends TitledTabList implements CustomTabList {
     }
 
     public void update(int index) {
-        Map<Integer,TabItem> map = new HashMap<>();
-        map.put(index, get(index));
         update(index, get(index), get(index));
     }
 
@@ -282,13 +278,16 @@ public class SimpleTabList extends TitledTabList implements CustomTabList {
     private PlayerInfoData getPlayerInfoData(WrappedGameProfile profile, int ping, String displayName) {
         if (displayName != null) {
             // min width
-            while (displayName.length() < this.minColumnWidth)
-                displayName += " ";
-
+            StringBuilder builder = new StringBuilder(Math.max(minColumnWidth, displayName.length()));
+            builder.append(displayName);
+            while (builder.length() < this.minColumnWidth) {
+                builder.append(" ");
+            }
             // max width
-            if (this.maxColumnWidth > 0)
-                while (displayName.length() > this.maxColumnWidth)
-                    displayName = displayName.substring(0, displayName.length() - 1);
+            if (this.maxColumnWidth > 0 && builder.length() > maxColumnWidth) {
+                builder.substring(0, maxColumnWidth);
+            }
+            displayName = builder.toString();
         }
 
         return new PlayerInfoData(profile, ping, NativeGameMode.SURVIVAL, displayName == null ? null : WrappedChatComponent.fromText(displayName));
