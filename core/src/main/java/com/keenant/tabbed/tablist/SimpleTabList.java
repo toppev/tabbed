@@ -313,10 +313,10 @@ public class SimpleTabList extends TitledTabList implements CustomTabList {
     }
 
     // because we want to customize this so it work's on 1.7 users
-    private NameProvider nameProvider = new NameProvider() {};
+    private static NameProvider nameProvider = new NameProvider() {};
 
-    public void setNameProvider(NameProvider nameProvider) {
-        this.nameProvider = nameProvider;
+    public static void setNameProvider(NameProvider nameProvider) {
+        SimpleTabList.nameProvider = nameProvider;
     }
 
     public interface NameProvider {
