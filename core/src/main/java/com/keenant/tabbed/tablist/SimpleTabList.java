@@ -165,7 +165,8 @@ public class SimpleTabList extends TitledTabList implements CustomTabList {
     }
 
     public void update(int index) {
-        update(index, get(index), get(index));
+        TabItem item = get(index);
+        update(index, item, item);
     }
 
     public int getNextIndex() {
