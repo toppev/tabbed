@@ -276,7 +276,7 @@ public class SimpleTabList extends TitledTabList implements CustomTabList {
     }
 
     private PlayerInfoData getPlayerInfoData(WrappedGameProfile profile, int ping, String displayName) {
-        if (displayName != null) {
+        if (displayName != null && (minColumnWidth > 0 || maxColumnWidth >= 0)) {
             // min width
             StringBuilder builder = new StringBuilder(Math.max(minColumnWidth, displayName.length()));
             builder.append(displayName);
