@@ -301,7 +301,7 @@ public class SimpleTabList extends TitledTabList implements CustomTabList {
         Map<Integer, WrappedGameProfile> indexCache = PROFILE_INDEX_CACHE.get(skin);
 
         if (!indexCache.containsKey(index)) { // Profile is not cached, generate and cache one.
-            String name = String.format("%03d", index) + "|UpdateMC"; // Starts with 00 so they are sorted in alphabetical order and appear in the right order.
+            String name = nameProvider.getName(index);
             UUID uuid = UUID.nameUUIDFromBytes(name.getBytes());
 
             WrappedGameProfile profile = new WrappedGameProfile(uuid, name); // Create a profile to cache by skin and index.
@@ -310,5 +310,21 @@ public class SimpleTabList extends TitledTabList implements CustomTabList {
         }
 
         return indexCache.get(index);
+    }
+
+    // because we want to customize this so it work's on 1.7 users
+    private NameProvider nameProvider = new NameProvider() {};
+
+    public void setNameProvider(NameProvider nameProvider) {
+        this.nameProvider = nameProvider;
+    }
+
+    public interface NameProvider {
+
+        default String getName(int index) {
+            // Starts with 00 so they are sorted in alphabetical order and appear in the right order.
+            return String.format("%03d", index) + "|UpdateMC";
+        }
+
     }
 }
