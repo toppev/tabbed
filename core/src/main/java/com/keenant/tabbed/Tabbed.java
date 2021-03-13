@@ -178,7 +178,7 @@ public class Tabbed implements Listener {
      * @return
      */
     public TableTabList newTableTabList(Player player, int columns, int minColumnWidth, int maxColumnWidth) {
-        return put(player, new TableTabList(this, player, columns, minColumnWidth, maxColumnWidth).enable());
+        return put(player, new TableTabList(this, player, columns, minColumnWidth, maxColumnWidth));
     }
 
     private <T extends TabList> T put(Player player, T tabList) {
