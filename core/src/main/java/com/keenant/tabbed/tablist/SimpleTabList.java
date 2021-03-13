@@ -13,6 +13,7 @@ import com.keenant.tabbed.util.Packets;
 import com.keenant.tabbed.util.Skin;
 import com.keenant.tabbed.util.Skins;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 import org.bukkit.entity.Player;
 
@@ -32,6 +33,9 @@ public class SimpleTabList extends TitledTabList implements CustomTabList {
     private final int maxItems;
     private final int minColumnWidth;
     private final int maxColumnWidth;
+
+    @Getter @Setter
+    private boolean legacyTab;
 
     @Getter boolean batchEnabled;
     private final Map<Integer,TabItem> clientItems;
@@ -295,21 +299,22 @@ public class SimpleTabList extends TitledTabList implements CustomTabList {
     }
 
     private WrappedGameProfile getGameProfile(int index, TabItem item) {
+        int cacheIndex = legacyTab ? index + 100 : index; // use +100 for legacy tab cache (different player names)
         Skin skin = item.getSkin();
         if (!PROFILE_INDEX_CACHE.containsKey(skin)) // Cached by skins, so if you change the skins a lot, it still works while being efficient.
             PROFILE_INDEX_CACHE.put(skin, new HashMap<>());
         Map<Integer, WrappedGameProfile> indexCache = PROFILE_INDEX_CACHE.get(skin);
 
-        if (!indexCache.containsKey(index)) { // Profile is not cached, generate and cache one.
+        if (!indexCache.containsKey(cacheIndex)) { // Profile is not cached, generate and cache one.
             String name = nameProvider.getName(index);
             UUID uuid = UUID.nameUUIDFromBytes(name.getBytes());
 
             WrappedGameProfile profile = new WrappedGameProfile(uuid, name); // Create a profile to cache by skin and index.
             profile.getProperties().put(Skin.TEXTURE_KEY, item.getSkin().getProperty());
-            indexCache.put(index, profile); // Cache the profile.
+            indexCache.put(cacheIndex, profile); // Cache the profile.
         }
 
-        return indexCache.get(index);
+        return indexCache.get(cacheIndex);
     }
 
     // because we want to customize this so it work's on 1.7 users
