@@ -280,7 +280,7 @@ public class TableTabList extends SimpleTabList {
         else if (columns == 2)
             return 11;
         else if (columns == 3)
-            return 14;
+            return 15;
         else if (columns == 4)
             return 20;
         else
