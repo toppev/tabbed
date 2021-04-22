@@ -275,17 +275,16 @@ public class TableTabList extends SimpleTabList {
     }
 
     private static int getMinRows(int columns) {
-        switch (columns) {
-            case 1:
-                return 1;
-            case 2:
-                return 11;
-            case 3:
-            case 4:
-                return 20;
-            default:
-                throw new RuntimeException("invalid column count " + columns);
-        }
+        if (columns == 1)
+            return 1;
+        else if (columns == 2)
+            return 11;
+        else if (columns == 3)
+            return 15;
+        else if (columns == 4)
+            return 20;
+        else
+            throw new RuntimeException("invalid column count " + columns);
     }
 
     /**
