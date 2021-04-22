@@ -119,6 +119,9 @@ public class Skins {
         });
     }
 
+    public static LoadingCache<String, String> getProfileCache() {
+        return profileCache;
+    }
 
     public static void setDebug(boolean debug) {
         Skins.debug = debug;
