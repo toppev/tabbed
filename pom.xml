@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
@@ -20,7 +20,7 @@
         </repository>
         <repository>
             <id>dmulloy2-repo</id>
-            <url>http://repo.dmulloy2.net/nexus/repository/public/</url>
+            <url>https://repo.dmulloy2.net/nexus/repository/public/</url>
         </repository>
     </repositories>
 
@@ -29,7 +29,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.16.6</version>
+            <version>1.18.24</version>
             <scope>provided</scope>
         </dependency>
 
@@ -41,19 +41,11 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- Bukkit API -->
-        <dependency>
-            <groupId>org.bukkit</groupId>
-            <artifactId>bukkit</artifactId>
-            <version>1.12.2-R0.1-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
-
         <!-- ProtocolLib -->
         <dependency>
             <groupId>com.comphenix.protocol</groupId>
-            <artifactId>ProtocolLib-API</artifactId>
-            <version>4.3.0</version>
+            <artifactId>ProtocolLib</artifactId>
+            <version>5.0.0-SNAPSHOT</version>
             <scope>provided</scope>
             <exclusions>
                 <exclusion>

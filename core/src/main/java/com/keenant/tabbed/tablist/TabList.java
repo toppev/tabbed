@@ -10,12 +10,14 @@ public interface TabList {
 
     /**
      * Enables the tab list, starts any necessary listeners/schedules.
+     *
      * @return The tab list.
      */
     TabList enable();
 
     /**
      * Disables the tab list: stops existing listeners/schedules.
+     *
      * @return The tab list.
      */
     TabList disable();

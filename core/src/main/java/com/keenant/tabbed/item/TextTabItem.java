@@ -12,9 +12,12 @@ import java.util.Objects;
  */
 @ToString
 public class TextTabItem implements TabItem {
-    @Getter private String text;
-    @Getter private int ping;
-    @Getter private Skin skin;
+    @Getter
+    private String text;
+    @Getter
+    private int ping;
+    @Getter
+    private Skin skin;
 
     private String newText;
     private int newPing;

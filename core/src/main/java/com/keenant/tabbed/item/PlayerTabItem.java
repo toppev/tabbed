@@ -5,19 +5,30 @@ import com.keenant.tabbed.util.Skin;
 import com.keenant.tabbed.util.Skins;
 import lombok.Getter;
 import lombok.ToString;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 
 /**
  * A tab item that represents a player.
  */
 @ToString
-public class PlayerTabItem implements TabItem {
-    @Getter private final Player player;
-    @Getter private final PlayerProvider<String> textProvider;
-    @Getter private final PlayerProvider<Skin> skinProvider;
-    @Getter private String text;
-    @Getter private int ping;
-    @Getter private Skin skin;
+public final class PlayerTabItem implements TabItem {
+    private static final PlayerProvider<String> NAME_PROVIDER = HumanEntity::getName;
+    private static final PlayerProvider<String> DISPLAY_NAME_PROVIDER = Player::getDisplayName;
+    private static final PlayerProvider<String> LIST_NAME_PROVIDER = Player::getPlayerListName;
+    private static final PlayerProvider<Skin> SKIN_PROVIDER = Skins::getPlayer;
+    @Getter
+    private final Player player;
+    @Getter
+    private final PlayerProvider<String> textProvider;
+    @Getter
+    private final PlayerProvider<Skin> skinProvider;
+    @Getter
+    private String text;
+    @Getter
+    private int ping;
+    @Getter
+    private Skin skin;
 
     public PlayerTabItem(Player player, PlayerProvider<String> textProvider, PlayerProvider<Skin> skinProvider) {
         this.player = player;
@@ -45,7 +56,7 @@ public class PlayerTabItem implements TabItem {
             return false;
 
         String newText = this.textProvider.get(this.player);
-        boolean update = this.text == null || !newText.equals(this.text);
+        boolean update = !newText.equals(this.text);
         this.text = newText;
         return update;
     }
@@ -67,57 +78,30 @@ public class PlayerTabItem implements TabItem {
             return false;
 
         Skin newSkin = this.skinProvider.get(this.player);
-        boolean update = this.skin == null || !newSkin.equals(this.skin);
+        boolean update = !newSkin.equals(this.skin);
         this.skin = newSkin;
         return update;
     }
 
     private int getNewPing() {
         try {
-            Object craftPlayer = Reflection.getHandle(this.player);
-            return craftPlayer.getClass().getDeclaredField("ping").getInt(craftPlayer);
-        } catch (Exception e) {
+            final Object entityPlayer = Reflection.getHandle(this.player);
+            return entityPlayer.getClass().getDeclaredField("ping").getInt(entityPlayer);
+        } catch (final Exception e) {
             throw new RuntimeException("couldn't get player ping", e);
         }
     }
 
-    private static PlayerProvider<String> NAME_PROVIDER = new PlayerProvider<String>() {
-        @Override
-        public String get(Player player) {
-            return player.getName();
-        }
-    };
-
-    private static PlayerProvider<String> DISPLAY_NAME_PROVIDER = new PlayerProvider<String>() {
-        @Override
-        public String get(Player player) {
-            return player.getDisplayName();
-        }
-    };
-
-    private static PlayerProvider<String> LIST_NAME_PROVIDER = new PlayerProvider<String>() {
-        @Override
-        public String get(Player player) {
-            return player.getPlayerListName();
-        }
-    };
-
-    private static PlayerProvider<Skin> SKIN_PROVIDER = new PlayerProvider<Skin>() {
-        @Override
-        public Skin get(Player player) {
-            return Skins.getPlayer(player);
-        }
-    };
-
-    public interface PlayerProvider<T> {
-        T get(Player player);
-    }
-
     @Override
     public boolean equals(Object object) {
-        if (!(object instanceof PlayerTabItem))
+        if (!(object instanceof PlayerTabItem)) {
             return false;
+        }
         PlayerTabItem other = (PlayerTabItem) object;
         return this.text.equals(other.getText()) && this.skin.equals(other.getSkin()) && this.ping == other.getPing();
+    }
+
+    public interface PlayerProvider<T> {
+        T get(final Player player);
     }
 }

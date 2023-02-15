@@ -1,8 +1,8 @@
 package com.keenant.tabbed.tablist;
 
-import com.keenant.tabbed.item.TabItem;
 import com.keenant.tabbed.Tabbed;
 import com.keenant.tabbed.item.PlayerTabItem;
+import com.keenant.tabbed.item.TabItem;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -19,7 +19,8 @@ import java.util.Map.Entry;
  * An implementation of SimpleTabList that behaves like vanilla Minecraft.
  */
 public final class DefaultTabList extends SimpleTabList implements Listener {
-    private Map<Player,String> names = new HashMap<>();
+
+    private final Map<Player, String> names = new HashMap<>();
 
     private int taskId;
 
@@ -32,27 +33,23 @@ public final class DefaultTabList extends SimpleTabList implements Listener {
         super.enable();
         this.tabbed.getPlugin().getServer().getPluginManager().registerEvents(this, this.tabbed.getPlugin());
 
-        for (Player target : Bukkit.getOnlinePlayers())
-            addPlayer(target);
+        Bukkit.getOnlinePlayers().forEach(this::addPlayer);
 
         // Because there is no PlayerListNameUpdateEvent in Bukkit
-        this.taskId = this.tabbed.getPlugin().getServer().getScheduler().scheduleSyncRepeatingTask(this.tabbed.getPlugin(), new Runnable() {
-            @Override
-            public void run() {
-                for (Player target : Bukkit.getOnlinePlayers()) {
-                    if (!names.containsKey(target))
-                        continue;
+        this.taskId = this.tabbed.getPlugin().getServer().getScheduler().scheduleSyncRepeatingTask(this.tabbed.getPlugin(), () -> {
+            for (Player target : Bukkit.getOnlinePlayers()) {
+                if (!names.containsKey(target))
+                    continue;
 
-                    String prevName = names.get(target);
-                    String currName = target.getPlayerListName();
+                String prevName = names.get(target);
+                String currName = target.getPlayerListName();
 
-                    if (prevName.equals(currName))
-                        continue;
-
-                    int index = getTabItemIndex(target);
-                    update(index);
-                    names.put(target, currName);
+                if (prevName.equals(currName)) {
+                    continue;
                 }
+
+                update(getTabItemIndex(target));
+                names.put(target, currName);
             }
         }, 0, 5);
 
@@ -83,22 +80,23 @@ public final class DefaultTabList extends SimpleTabList implements Listener {
     }
 
     private int getTabItemIndex(Player player) {
-        for (Entry<Integer,TabItem> item : this.items.entrySet()) {
+        for (Entry<Integer, TabItem> item : this.items.entrySet()) {
             // items will always be players in this case, cast is safe
             PlayerTabItem tabItem = (PlayerTabItem) item.getValue();
-            if (tabItem.getPlayer().equals(player))
+            if (tabItem.getPlayer().equals(player)) {
                 return item.getKey();
+            }
         }
         return -1;
     }
 
     private int getInsertLocation(Player player) {
-        for (Entry<Integer,TabItem> item : this.items.entrySet()) {
+        for (Entry<Integer, TabItem> item : this.items.entrySet()) {
             // items will always be players in this case, cast is safe
             PlayerTabItem tabItem = (PlayerTabItem) item.getValue();
-
-            if (player.getName().compareTo(tabItem.getPlayer().getName()) < 0)
+            if (player.getName().compareTo(tabItem.getPlayer().getName()) < 0) {
                 return item.getKey();
+            }
         }
         return getNextIndex();
     }
