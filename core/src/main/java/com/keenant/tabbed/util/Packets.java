@@ -7,8 +7,8 @@ import com.comphenix.protocol.wrappers.EnumWrappers.PlayerInfoAction;
 import com.comphenix.protocol.wrappers.PlayerInfoData;
 import org.bukkit.entity.Player;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Some generic-ish packet utils.
@@ -27,8 +27,15 @@ public final class Packets {
      */
     public static PacketContainer getPacket(PlayerInfoAction action, List<PlayerInfoData> data) {
         PacketContainer packet = ProtocolLibrary.getProtocolManager().createPacket(Server.PLAYER_INFO);
-        packet.getPlayerInfoAction().write(0, action);
-        packet.getPlayerInfoDataLists().write(0, data);
+        // not sure if only 1.19.2+ or not, whatever... too lazy to check
+        if (Reflection.IS_19_R2_PLUS) {
+            Set<PlayerInfoAction> set = new HashSet<>(1);
+            set.add(action);
+            packet.getPlayerInfoActions().write(0, set);
+        } else {
+            packet.getPlayerInfoAction().write(0, action);
+        }
+        packet.getPlayerInfoDataLists().write(1, data);
         return packet;
     }
 
@@ -36,8 +43,19 @@ public final class Packets {
      * Creates a PLAYER_INFO_REMOVE packet.
      */
     public static PacketContainer getRemovePacket(List<PlayerInfoData> removedPlayers) {
-        PacketContainer packet = ProtocolLibrary.getProtocolManager().createPacket(Server.PLAYER_INFO_REMOVE);
-        packet.getPlayerInfoDataLists().write(0, removedPlayers);
+        PacketContainer packet;
+        if (Reflection.IS_19_R2_PLUS) {
+            packet = ProtocolLibrary.getProtocolManager().createPacket(Server.PLAYER_INFO_REMOVE);
+            packet.getUUIDLists().write(
+                    0,
+                    removedPlayers.stream().map(PlayerInfoData::getProfileId).collect(Collectors.toList())
+            );
+        } else {
+            packet = ProtocolLibrary.getProtocolManager().createPacket(Server.PLAYER_INFO);
+            //noinspection deprecation
+            packet.getPlayerInfoAction().write(0, PlayerInfoAction.REMOVE_PLAYER);
+            packet.getPlayerInfoDataLists().write(0, removedPlayers);
+        }
         return packet;
     }
 
