@@ -15,12 +15,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 
-public class Tabbed implements Listener {
-    private static Map<Plugin,Tabbed> instances = new HashMap<>();
-    @Getter @Setter static Level logLevel = Level.WARNING;
+public final class Tabbed implements Listener {
 
-    @Getter private final Plugin plugin;
-    private final Map<Player,TabList> tabLists;
+    private static final Map<Plugin, Tabbed> instances = new HashMap<>();
+    @Getter
+    @Setter
+    static Level logLevel = Level.WARNING;
+
+    @Getter
+    private final Plugin plugin;
+    private final Map<Player, TabList> tabLists;
 
     public Tabbed(Plugin plugin) {
         this.plugin = plugin;
@@ -36,8 +40,6 @@ public class Tabbed implements Listener {
 
     /**
      * Gets an instance of Tabbed from a plugin.
-     * @param plugin
-     * @return
      */
     public static Tabbed getTabbed(Plugin plugin) {
         return instances.get(plugin);
@@ -50,7 +52,7 @@ public class Tabbed implements Listener {
 
     /**
      * Get the current tab list of the player.
-     * @param player
+     *
      * @return The tab list, or null if it wasn't present.
      */
     public TabList getTabList(Player player) {
@@ -59,7 +61,7 @@ public class Tabbed implements Listener {
 
     /**
      * Disables the tab list of a player.
-     * @param player
+     *
      * @return The tab list removed (or null if it wasn't present).
      */
     public TabList destroyTabList(Player player) {
@@ -72,7 +74,7 @@ public class Tabbed implements Listener {
 
     /**
      * Disables a tab list.
-     * @param tabList
+     *
      * @return The tab list removed.
      */
     public TabList destroyTabList(TabList tabList) {
@@ -81,8 +83,6 @@ public class Tabbed implements Listener {
 
     /**
      * Creates a new TitledTabList with the given parameters.
-     * @param player
-     * @return
      */
     public TitledTabList newTitledTabList(Player player) {
         return put(player, new TitledTabList(player).enable());
@@ -90,8 +90,6 @@ public class Tabbed implements Listener {
 
     /**
      * Creates a new DefaultTabList.
-     * @param player
-     * @return
      */
     public DefaultTabList newDefaultTabList(Player player) {
         return put(player, new DefaultTabList(this, player, -1).enable());
@@ -99,8 +97,6 @@ public class Tabbed implements Listener {
 
     /**
      * Creates a new CustomTabList with the given parameters.
-     * @param player
-     * @return
      */
     public SimpleTabList newSimpleTabList(Player player) {
         return newSimpleTabList(player, SimpleTabList.MAXIMUM_ITEMS);
@@ -108,9 +104,6 @@ public class Tabbed implements Listener {
 
     /**
      * Creates a new CustomTabList with the given parameters.
-     * @param player
-     * @param maxItems
-     * @return
      */
     public SimpleTabList newSimpleTabList(Player player, int maxItems) {
         return newSimpleTabList(player, maxItems, -1);
@@ -118,10 +111,6 @@ public class Tabbed implements Listener {
 
     /**
      * Creates a new CustomTabList with the given parameters.
-     * @param player
-     * @param maxItems
-     * @param minColumnWidth
-     * @return
      */
     public SimpleTabList newSimpleTabList(Player player, int maxItems, int minColumnWidth) {
         return newSimpleTabList(player, maxItems, minColumnWidth, -1);
@@ -129,11 +118,6 @@ public class Tabbed implements Listener {
 
     /**
      * Creates a new CustomTabList with the given parameters.
-     * @param player
-     * @param maxItems
-     * @param minColumnWidth
-     * @param maxColumnWidth
-     * @return
      */
     public SimpleTabList newSimpleTabList(Player player, int maxItems, int minColumnWidth, int maxColumnWidth) {
         return put(player, new SimpleTabList(this, player, maxItems, minColumnWidth, maxColumnWidth).enable());
@@ -141,8 +125,6 @@ public class Tabbed implements Listener {
 
     /**
      * Creates a new TableTabList with the given parameters.
-     * @param player
-     * @return
      */
     public TableTabList newTableTabList(Player player) {
         return newTableTabList(player, 4);
@@ -150,9 +132,6 @@ public class Tabbed implements Listener {
 
     /**
      * Creates a new TableTabList with the given parameters.
-     * @param player
-     * @param columns
-     * @return
      */
     public TableTabList newTableTabList(Player player, int columns) {
         return newTableTabList(player, columns, -1);
@@ -160,10 +139,6 @@ public class Tabbed implements Listener {
 
     /**
      * Creates a new TableTabList with the given parameters.
-     * @param player
-     * @param columns
-     * @param minColumnWidth
-     * @return
      */
     public TableTabList newTableTabList(Player player, int columns, int minColumnWidth) {
         return newTableTabList(player, columns, minColumnWidth, -1);
@@ -171,11 +146,6 @@ public class Tabbed implements Listener {
 
     /**
      * Creates a new TableTabList with the given parameters.
-     * @param player
-     * @param columns
-     * @param minColumnWidth
-     * @param maxColumnWidth
-     * @return
      */
     public TableTabList newTableTabList(Player player, int columns, int minColumnWidth, int maxColumnWidth) {
         return put(player, new TableTabList(this, player, columns, minColumnWidth, maxColumnWidth));

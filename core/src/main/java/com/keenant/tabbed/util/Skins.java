@@ -31,8 +31,7 @@ import java.util.logging.Level;
 /**
  * Some Skin utils.
  */
-public class Skins {
-
+public final class Skins {
 
     public static final List<Skin> DOT_SKINS;
     public static final ArrayListMultimap<EntityType, Skin> MOB_SKINS;
@@ -126,19 +125,16 @@ public class Skins {
         return profileCache;
     }
 
-    public static void setDebug(boolean debug) {
-        Skins.debug = debug;
-    }
-
     public static boolean isDebug() {
         return debug;
     }
 
+    public static void setDebug(boolean debug) {
+        Skins.debug = debug;
+    }
+
     /**
      * Get a skin from an entity type.
-     *
-     * @param type
-     * @return
      */
     public static Skin getMob(EntityType type) {
         return getMob(type, 0);
@@ -147,9 +143,7 @@ public class Skins {
     /**
      * Get a skin from an entity type and alternate form number.
      *
-     * @param type
      * @param alternateForm Used if multiple versions of this mob exist (wither skeleton = 1, ender guardian = 1)
-     * @return
      */
     public static Skin getMob(EntityType type, int alternateForm) {
         List<Skin> skins = MOB_SKINS.get(type);
@@ -162,9 +156,6 @@ public class Skins {
 
     /**
      * Get a cool skin based on a chat color (grey square with a colored dot).
-     *
-     * @param color
-     * @return
      */
     public static Skin getDot(ChatColor color) {
         return DOT_SKINS.get(color.ordinal());
@@ -172,9 +163,6 @@ public class Skins {
 
     /**
      * Get a skin from an online player.
-     *
-     * @param player
-     * @return
      */
     public static Skin getPlayer(Player player) {
         WrappedSignedProperty property = DEFAULT_SKIN.getProperty();
@@ -186,9 +174,6 @@ public class Skins {
 
     /**
      * Get a Minecraft user's skin.
-     *
-     * @param username
-     * @return
      */
     public static Skin getPlayer(String username) {
         if (!Bukkit.getOnlineMode()) {
@@ -200,9 +185,6 @@ public class Skins {
 
     /**
      * Get a Minecraft user's skin.
-     *
-     * @param uuid
-     * @return
      */
     public static Skin getPlayer(UUID uuid) {
         try {

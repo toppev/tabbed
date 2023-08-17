@@ -11,9 +11,10 @@ import java.util.Objects;
  * Represents the skin/avatar of a tab item.
  */
 @ToString
-public class Skin {
-    @Getter private final WrappedSignedProperty property;
+public final class Skin {
     public static final String TEXTURE_KEY = "textures";
+    @Getter
+    private final WrappedSignedProperty property;
 
     public Skin(String value, String signature) {
         this(new WrappedSignedProperty(TEXTURE_KEY, value, signature));

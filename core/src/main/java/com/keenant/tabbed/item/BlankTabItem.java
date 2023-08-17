@@ -8,7 +8,7 @@ import lombok.ToString;
  * A blank TextTabItem
  */
 @ToString
-public class BlankTabItem extends TextTabItem {
+public final class BlankTabItem extends TextTabItem {
     public BlankTabItem(Skin skin) {
         super("", 1000, skin);
     }

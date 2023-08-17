@@ -8,16 +8,17 @@ import lombok.Getter;
 import lombok.ToString;
 import org.bukkit.entity.Player;
 
-import java.lang.reflect.InvocationTargetException;
-
 /**
  * A very basic tab list. It doesn't modify the items, only the header/footer.
  */
 @ToString
 public class TitledTabList implements TabList {
-    @Getter protected final Player player;
-    @Getter private String header;
-    @Getter private String footer;
+    @Getter
+    protected final Player player;
+    @Getter
+    private String header;
+    @Getter
+    private String footer;
 
     public TitledTabList(Player player) {
         this.player = player;
@@ -66,10 +67,6 @@ public class TitledTabList implements TabList {
         PacketContainer packet = new PacketContainer(Server.PLAYER_LIST_HEADER_FOOTER);
         packet.getChatComponents().write(0, WrappedChatComponent.fromText(this.header == null ? "" : this.header));
         packet.getChatComponents().write(1, WrappedChatComponent.fromText(this.footer == null ? "" : this.footer));
-        try {
-            ProtocolLibrary.getProtocolManager().sendServerPacket(this.player, packet);
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        }
+        ProtocolLibrary.getProtocolManager().sendServerPacket(this.player, packet);
     }
 }
