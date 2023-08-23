@@ -27,15 +27,15 @@ public final class Packets {
      */
     public static PacketContainer getPacket(PlayerInfoAction action, List<PlayerInfoData> data) {
         PacketContainer packet = ProtocolLibrary.getProtocolManager().createPacket(Server.PLAYER_INFO);
-        // not sure if only 1.19.2+ or not, whatever... too lazy to check
         if (Reflection.IS_19_R2_PLUS) {
             Set<PlayerInfoAction> set = new HashSet<>(1);
             set.add(action);
             packet.getPlayerInfoActions().write(0, set);
+            packet.getPlayerInfoDataLists().write(1, data);
         } else {
             packet.getPlayerInfoAction().write(0, action);
+            packet.getPlayerInfoDataLists().write(0, data);
         }
-        packet.getPlayerInfoDataLists().write(1, data);
         return packet;
     }
 
