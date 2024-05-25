@@ -11,11 +11,11 @@ import java.lang.reflect.Method;
 public final class Reflection {
 
 
-    public static final String VERSION_EXACT = Bukkit.getBukkitVersion().split("-")[0];
-    public static final int INT_VER = Integer.parseInt(VERSION_EXACT.split("\\.")[1]);
+    public static final String VERSION_EXACT = Bukkit.getBukkitVersion().split("-")[0]; // e.g. 1.20.6
+    public static final int INT_VER = Integer.parseInt(VERSION_EXACT.split("\\.")[1]); // e.g. 20
     public static final boolean IS_PAPER = findClass("com.destroystokyo.paper.PaperConfig", "io.papermc.paper.configuration.Configuration");
 
-    public static final String VERSION = findVersion();
+    public static final String VERSION = findVersion(); // e.g. 1_20_R4
     public static final boolean IS_19_R2_PLUS = INT_VER > 18 && !VERSION.equals("1_19_R1");
     public static final boolean IS_20_R4_PLUS = INT_VER > 19 && !"1_20_R1".equals(VERSION) && !"1_20_R2".equals(VERSION) && !"1_20_R3".equals(VERSION);
     private static final Method GET_HANDLE;
@@ -51,6 +51,9 @@ public final class Reflection {
                 case "1.21":
                     return "1_21_R1";
                 default:
+                    Bukkit.getLogger().warning(
+                            "[TABBED] Couldn't find NMS version for paper " + VERSION_EXACT + ", you can ignore this if everything works fine."
+                    );
                     return "UNKNOWN";
             }
         }
