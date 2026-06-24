@@ -11,8 +11,11 @@ import java.lang.reflect.Method;
 public final class Reflection {
 
 
-    public static final String VERSION_EXACT = Bukkit.getBukkitVersion().split("-")[0]; // e.g. 1.20.6
-    public static final int INT_VER = Integer.parseInt(VERSION_EXACT.split("\\.")[1]); // e.g. 20
+    public static final String VERSION_EXACT = Bukkit.getBukkitVersion().split("-")[0]; // e.g. 1.20.6 or 26.1.2
+    // Minecraft switched from the "1.X.Y" scheme to calendar versioning ("26.1.2") in 2026.
+    // For the classic scheme the meaningful number is the second part (1.20 -> 20); the new
+    // scheme has no leading "1." so it is always a modern release -> treat as a high version.
+    public static final int INT_VER = "1".equals(VERSION_EXACT.split("\\.")[0]) ? Integer.parseInt(VERSION_EXACT.split("\\.")[1]) : 99;
     public static final boolean IS_PAPER = findClass("com.destroystokyo.paper.PaperConfig", "io.papermc.paper.configuration.Configuration");
 
     public static final String VERSION = findVersion(); // e.g. 1_20_R4
@@ -51,9 +54,14 @@ public final class Reflection {
                 case "1.21":
                     return "1_21_R1";
                 default:
-                    Bukkit.getLogger().warning(
-                            "[TABBED] Couldn't find NMS version for paper " + VERSION_EXACT + ", you can ignore this if everything works fine."
-                    );
+                    // VERSION is only used to build the versioned CraftPlayer package, which
+                    // modern Paper (1.20.5+ / calendar versions) no longer has - those go through
+                    // the unversioned path, so UNKNOWN is harmless there and needs no warning.
+                    if (VERSION_EXACT.startsWith("1.")) {
+                        Bukkit.getLogger().warning(
+                                "[TABBED] Couldn't find NMS version for paper " + VERSION_EXACT + ", you can ignore this if everything works fine."
+                        );
+                    }
                     return "UNKNOWN";
             }
         }
