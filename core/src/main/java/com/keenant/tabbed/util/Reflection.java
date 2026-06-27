@@ -5,31 +5,45 @@ import org.bukkit.entity.Player;
 
 import java.lang.reflect.Method;
 
-/**
- * Reflection util.
- */
-public final class Reflection {
+public class Reflection {
 
+    public static final String VERSION_EXACT;
+    public static final String NMS;
 
-    public static final String VERSION_EXACT = Bukkit.getBukkitVersion().split("-")[0]; // e.g. 1.20.6 or 26.1.2
-    // Minecraft switched from the "1.X.Y" scheme to calendar versioning ("26.1.2") in 2026.
-    // For the classic scheme the meaningful number is the second part (1.20 -> 20); the new
-    // scheme has no leading "1." so it is always a modern release -> treat as a high version.
-    public static final int INT_VER = "1".equals(VERSION_EXACT.split("\\.")[0]) ? Integer.parseInt(VERSION_EXACT.split("\\.")[1]) : 99;
-    public static final boolean IS_PAPER = findClass("com.destroystokyo.paper.PaperConfig", "io.papermc.paper.configuration.Configuration");
+    public static final boolean IS_PAPER;
+    public static final boolean IS_FOLIA;
 
-    public static final String VERSION = findVersion(); // e.g. 1_20_R4
-    public static final boolean IS_19_R2_PLUS = INT_VER > 18 && !VERSION.equals("1_19_R1");
-    public static final boolean IS_20_R4_PLUS = INT_VER > 19 && !"1_20_R1".equals(VERSION) && !"1_20_R2".equals(VERSION) && !"1_20_R3".equals(VERSION);
+    public static final int MAJOR;
+    public static final int MINOR;
+    public static final int PATCH;
+
     private static final Method GET_HANDLE;
 
     static {
+        VERSION_EXACT = Bukkit.getBukkitVersion()
+                .split("-")[0]
+                .replaceAll("\\.build\\.\\d+", "");
+
+        IS_PAPER = findClass(
+                "com.destroystokyo.paper.PaperConfig",
+                "io.papermc.paper.configuration.Configuration"
+        );
+
+        IS_FOLIA = findClass("io.papermc.paper.threadedregions.RegionizedServer");
+
+        String[] versions = VERSION_EXACT.split("\\.");
+        MAJOR = Integer.parseInt(versions[0]);
+        MINOR = Integer.parseInt(versions[1]);
+        PATCH = versions.length > 2 ? Integer.parseInt(versions[2]) : 0;
+
+        NMS = findVersion();
+
         try {
             final Class<?> craftPlayer;
-            if (IS_PAPER && IS_20_R4_PLUS) {
+            if (IS_PAPER && isOrOver(1, 20, 5)) {
                 craftPlayer = Class.forName("org.bukkit.craftbukkit.entity.CraftPlayer");
             } else {
-                craftPlayer = Class.forName("org.bukkit.craftbukkit.v" + VERSION + ".entity.CraftPlayer");
+                craftPlayer = Class.forName("org.bukkit.craftbukkit.v" + NMS + ".entity.CraftPlayer");
             }
             GET_HANDLE = craftPlayer.getMethod("getHandle");
         } catch (final Exception e) {
@@ -37,32 +51,44 @@ public final class Reflection {
         }
     }
 
+    public static boolean is(int major, int minor, int patch) {
+        return MAJOR == major && MINOR == minor && PATCH == patch;
+    }
+
+    public static boolean isOver(int major, int minor, int patch) {
+        if (MAJOR > major) return true;
+        if (MAJOR == major && MINOR > minor) return true;
+        if (MAJOR == major && MINOR == minor) return PATCH > patch;
+        return false;
+    }
+
+    public static boolean isOrOver(int major, int minor, int patch) {
+        return isOver(major, minor, patch) || is(major, minor, patch);
+    }
+
+    public static boolean isBelow(int major, int minor, int patch) {
+        if (MAJOR < major) return true;
+        if (MAJOR == major && MINOR < minor) return true;
+        if (MAJOR == major && MINOR == minor) return PATCH < patch;
+        return false;
+    }
+
     private static String findVersion() {
-        if (IS_PAPER && INT_VER >= 20) {
+        // In 26.1+ Spigot uses Mojang mappings and does not relocate
+        // org.craftbukkit package anymore. needs to be handled same as
+        // older paper versions when they did that out of nowhere
+        if (MAJOR >= 26 || (IS_PAPER && (MAJOR > 1 || MINOR >= 20))) {
             switch (VERSION_EXACT) {
                 case "1.20":
-                case "1.20.1":
-                    return "1_20_R1";
+                case "1.20.1": return "1_20_R1";
                 case "1.20.2":
-                case "1.20.3":
-                    return "1_20_R2";
-                case "1.20.4":
-                    return "1_20_R3";
+                case "1.20.3": return "1_20_R2";
+                case "1.20.4": return "1_20_R3";
                 case "1.20.5":
-                case "1.20.6":
-                    return "1_20_R4";
+                case "1.20.6": return "1_20_R4";
                 case "1.21":
-                    return "1_21_R1";
-                default:
-                    // VERSION is only used to build the versioned CraftPlayer package, which
-                    // modern Paper (1.20.5+ / calendar versions) no longer has - those go through
-                    // the unversioned path, so UNKNOWN is harmless there and needs no warning.
-                    if (VERSION_EXACT.startsWith("1.")) {
-                        Bukkit.getLogger().warning(
-                                "[TABBED] Couldn't find NMS version for paper " + VERSION_EXACT + ", you can ignore this if everything works fine."
-                        );
-                    }
-                    return "UNKNOWN";
+                case "1.21.1": return "1_21_R1";
+                default: return "UNKNOWN";
             }
         }
         return Bukkit.getServer().getClass().getPackage().getName().substring(24);
@@ -74,7 +100,7 @@ public final class Reflection {
      * @param paths all possible class paths
      * @return false if the {@link Class} was NOT found
      */
-    private static boolean findClass(final String... paths) {
+    public static boolean findClass(final String... paths) {
         for (final String path : paths) {
             if (getClass(path) != null) return true;
         }

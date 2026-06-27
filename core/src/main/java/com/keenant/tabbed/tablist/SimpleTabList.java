@@ -262,7 +262,7 @@ public class SimpleTabList extends TitledTabList implements CustomTabList {
         if (removedPlayers.size() > 0 || addedPlayers.size() > 0) {
             result.add(Packets.getRemovePacket(removedPlayers));
             result.add(Packets.getPacket(PlayerInfoAction.ADD_PLAYER, addedPlayers));
-            if (Reflection.IS_19_R2_PLUS) {
+            if (Reflection.isOrOver(1, 19, 3)) {
                 result.add(Packets.getPacket(PlayerInfoAction.UPDATE_LISTED, addedPlayers));
             }
         }
