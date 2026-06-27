@@ -1,0 +1,6 @@
+# ProtocolLib 5.4.0 ships Java 17 (bytecode v61) class files, so the build JDK
+# must be >= 17 to read them. JitPack defaults to JDK 8, which fails with
+# "class file has wrong version 61.0, should be 52.0". The compiler still targets
+# 1.8 (see pom.xml), so the produced tabbed classes stay Java 8 compatible.
+jdk:
+  - openjdk17
