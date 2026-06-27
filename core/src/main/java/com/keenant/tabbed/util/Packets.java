@@ -27,7 +27,7 @@ public final class Packets {
      */
     public static PacketContainer getPacket(PlayerInfoAction action, List<PlayerInfoData> data) {
         PacketContainer packet = ProtocolLibrary.getProtocolManager().createPacket(Server.PLAYER_INFO);
-        if (Reflection.IS_19_R2_PLUS) {
+        if (Reflection.isOrOver(1, 19, 3)) {
             Set<PlayerInfoAction> set = new HashSet<>(1);
             set.add(action);
             packet.getPlayerInfoActions().write(0, set);
@@ -44,7 +44,7 @@ public final class Packets {
      */
     public static PacketContainer getRemovePacket(List<PlayerInfoData> removedPlayers) {
         PacketContainer packet;
-        if (Reflection.IS_19_R2_PLUS) {
+        if (Reflection.isOrOver(1, 19, 3)) {
             packet = ProtocolLibrary.getProtocolManager().createPacket(Server.PLAYER_INFO_REMOVE);
             packet.getUUIDLists().write(
                     0,
