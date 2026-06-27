@@ -18,10 +18,9 @@
             <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
-        <repository>
-            <id>dmulloy2-repo</id>
-            <url>https://repo.dmulloy2.net/repository/public/</url>
-        </repository>
+        <!-- ProtocolLib is now resolved from Maven Central (net.dmulloy2:ProtocolLib),
+             so repo.dmulloy2.net is no longer needed. That repo 403s JitPack's build
+             servers, which previously broke the tabbed-core build on JitPack. -->
     </repositories>
 
     <dependencies>
@@ -41,18 +40,12 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- ProtocolLib -->
+        <!-- ProtocolLib (Maven Central, canonical net.dmulloy2 coords) -->
         <dependency>
-            <groupId>com.comphenix.protocol</groupId>
+            <groupId>net.dmulloy2</groupId>
             <artifactId>ProtocolLib</artifactId>
-            <version>5.3.0</version>
+            <version>5.4.0</version>
             <scope>provided</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.comphenix.executors</groupId>
-                    <artifactId>BukkitExecutors</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
     </dependencies>
 
